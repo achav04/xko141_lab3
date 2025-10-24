@@ -47,7 +47,7 @@ public class MainScreenController {
             );
             imageView.setImage(logoImage);
         } catch (Exception e) {
-            printShip("Logo image not found.");
+            print("Logo image not found.");
         }
         txtList.setStyle("-fx-font-family: 'Consolas'; -fx-font-size: 12;");
 
@@ -60,7 +60,7 @@ public class MainScreenController {
         String regNumber = txtRegistrationNum.getText().trim();
 
         if (regNumber.isEmpty()) {
-            printShip("Please enter a registration number first.");
+            print("Please enter a registration number first.");
             return;
         }
 
@@ -69,7 +69,7 @@ public class MainScreenController {
         } else if (btnDelete.isSelected()) {
             deleteShip(regNumber);
         } else {
-            printShip("Please select an action (Find or Delete).");
+            print("Please select an action (Find or Delete).");
         }
     }
 
@@ -79,9 +79,9 @@ public class MainScreenController {
     private void findShip(String regNumber) {
         AidShip ship = manager.findAidShip(regNumber);
         if (ship != null) {
-            printShip("Ship found:\n" + ship.toString());
+            print("Ship found:\n" + ship.toString());
         } else {
-            printShip("No ship found with registration number: " + regNumber);
+            print("No ship found with registration number: " + regNumber + "\n");
         }
     }
 
@@ -91,25 +91,24 @@ public class MainScreenController {
     private void deleteShip(String regNumber) throws IOException {
         boolean deleted = manager.deleteAidShip(regNumber);
         if (deleted) {
-            printShip("Ship with registration number " + regNumber + " was deleted.");
+            print("Ship with registration number " + regNumber + " was deleted.");
         } else {
-            printShip("No ship found with registration number " + regNumber);
+            print("No ship found with registration number " + regNumber);
         }
     }
 
-    /**
-     * Utility method to show a popup alert.
-     */
-    private void printShip(String message) {
-        txtList.appendText(message);
+    private void print(String message){
+        txtList.setText(message);
     }
 
+
+// print all ships
     @FXML
     private void onList() {
         ArrayList<AidShip> ships = manager.getAidShipList();
 
         if (ships.isEmpty()) {
-            printShip("No ships found in the database.");
+            printShipList("No ships found in the database.");
             return;
         }
 
@@ -117,13 +116,17 @@ public class MainScreenController {
         for (AidShip s : ships) {
             sb.append(s.toString()).append("\n");
         }
-        printShip("----------------------------------------------------------------------------------------------------------------------------\n");
-        printShip(String.format(
-                "|%-15s |%-15s |%-10s |%-10s |%-22s |%-22s |%-10s |%-13s\n",
+        printShipList("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+        printShipList(String.format(
+                "|%-22s |%-22s |%-22s |%-22s |%-22s |%-22s |%-22s |%-22s\n",
                 "Name", "Registration", "Tonnage", "Crew Size", "Current Port",
                 "Aid Type", "Supplies", "Helipad"
         ));
-        printShip("----------------------------------------------------------------------------------------------------------------------------\n");
-        printShip(sb.toString());
+        printShipList("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+        printShipList(sb.toString());
+    }
+
+    private void printShipList(String message) {
+        txtList.appendText(message);
     }
 }

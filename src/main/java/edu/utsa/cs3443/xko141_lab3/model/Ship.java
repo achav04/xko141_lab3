@@ -33,7 +33,7 @@ public abstract class Ship implements Navigable {
 
 //common attributes for ships toString
     public String toString() {
-        return String.format("|%-15s |%-15s |%-10.2f |%-10d |%-22s", name, registrationNumber, tonnage, crewSize, currentPort);
+        return String.format("|%-22s |%-22s |%-22.2f |%-22d |%-22s", name, registrationNumber, tonnage, crewSize, currentPort);
     }
 
     //getters and setters
