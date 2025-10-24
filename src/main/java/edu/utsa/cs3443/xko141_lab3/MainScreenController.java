@@ -55,8 +55,9 @@ public class MainScreenController {
 
         // Load logo image from resources
         try {
-            Image logoImage = new Image(getClass().getResourceAsStream("/src/main/resources/xko141_lab3/images/logo.png"
-            ));
+            Image logoImage = new Image(
+                    getClass().getResourceAsStream("/edu/utsa/cs3443/xko141_lab3/images/logo.png")
+            );
             imgLogo.setImage(logoImage);
         } catch (Exception e) {
             showAlert("Logo image not found.", AlertType.WARNING);

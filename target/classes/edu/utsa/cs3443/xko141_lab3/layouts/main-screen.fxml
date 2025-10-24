@@ -19,7 +19,7 @@
             <!-- App Logo -->
             <ImageView fx:id="imgLogo" fitHeight="100" preserveRatio="true">
                 <image>
-                    <Image url="@/edu/utsa/cs3443/xko141_lab3/images/logo.png"/>
+                    <Image url="/edu/utsa/cs3443/xko141_lab3/images/logo.png"/>
                 </image>
             </ImageView>
 
