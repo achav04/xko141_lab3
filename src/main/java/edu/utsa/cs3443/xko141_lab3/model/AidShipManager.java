@@ -68,14 +68,19 @@ public class AidShipManager {
     /**
      * Deletes a ship by registration number.
      */
-    public boolean deleteAidShip(String regNum) {
+    public boolean deleteAidShip(String regNum) throws IOException {
         AidShip found = findAidShip(regNum);
+
         if (found != null) {
             aidShips.remove(found);
             return true;
         }
         return false;
+
     }
+
+
+
 
     /**
      * Returns all loaded ships.

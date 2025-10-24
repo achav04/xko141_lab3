@@ -32,6 +32,7 @@ public class MainScreenController {
     @FXML private TextArea txtList;
     @FXML private Button btnGo;
 
+
     private AidShipManager manager;
 
     @FXML
@@ -79,7 +80,19 @@ public class MainScreenController {
     private void findShip(String regNumber) {
         AidShip ship = manager.findAidShip(regNumber);
         if (ship != null) {
-            print("Ship found:\n" + ship.toString());
+            print(
+                    "Aid Ship Card:"+
+                    "\n----------------------------------------------------------------------"+
+                    "\nName:                  " +ship.getName()+
+                    "\nRegistration Number:   " +ship.getRegistrationNumber()+
+                    "\nTonnage:               " +ship.getTonnage()+
+                    "\nCrew Size:             " +ship.getCrewSize()+
+                    "\nCurrent Port:          " +ship.getCurrentPort()+
+                    "\nAid Type:              " +ship.getAidType()+
+                    "\nSupplies On Board:     " +ship.getSuppliesOnBoard()+
+                    "\nHelipad:               " +(ship.isHasHelipad() ? "Available" : "Not Available")+
+                    "\n----------------------------------------------------------------------"
+            );
         } else {
             print("No ship found with registration number: " + regNumber + "\n");
         }
@@ -90,11 +103,13 @@ public class MainScreenController {
      */
     private void deleteShip(String regNumber) throws IOException {
         boolean deleted = manager.deleteAidShip(regNumber);
+
         if (deleted) {
             print("Ship with registration number " + regNumber + " was deleted.");
         } else {
             print("No ship found with registration number " + regNumber);
         }
+
     }
 
     private void print(String message){
@@ -116,6 +131,11 @@ public class MainScreenController {
         for (AidShip s : ships) {
             sb.append(s.toString()).append("\n");
         }
+
+        print("");
+
+        printShipList("AidShipCoordinator List has " + ships.size() + " responders\n");
+
         printShipList("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
         printShipList(String.format(
                 "|%-22s |%-22s |%-22s |%-22s |%-22s |%-22s |%-22s |%-22s\n",
