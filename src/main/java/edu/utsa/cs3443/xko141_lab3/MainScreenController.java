@@ -31,6 +31,7 @@ public class MainScreenController {
     @FXML private TextField txtRegistrationNum;
     @FXML private TextArea txtList;
     @FXML private Button btnGo;
+    @FXML private ToggleGroup grouped;
 
 
     private AidShipManager manager;
@@ -38,6 +39,9 @@ public class MainScreenController {
     @FXML
     public void initialize() throws IOException {
         manager = new AidShipManager();
+        grouped = new ToggleGroup();
+        btnFind.setToggleGroup(grouped);
+        btnDelete.setToggleGroup(grouped);
 
         manager.loadAidShips("/edu/utsa/cs3443/xko141_lab3/data/aid_ships.csv");
 
