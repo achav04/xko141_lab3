@@ -39,8 +39,10 @@ public class AidShip extends Ship implements EmergencySupport {
     }
 
     // toString prints aid ship attributes
+    @Override
     public String toString() {
-        return "Aid Ship " + super.toString() + ", aidType=" + aidType + ", suppliesOnBoard=" + suppliesOnBoard + ", hasHelipad=" + hasHelipad + " ]";
+        return String.format("%s |%-22s |%-10d |%-13s",
+                super.toString(), aidType, suppliesOnBoard, hasHelipad ? "Available" : "Not Available");
     }
 
     //getters and setters

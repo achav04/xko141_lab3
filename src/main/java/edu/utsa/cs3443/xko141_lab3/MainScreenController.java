@@ -2,6 +2,7 @@ package edu.utsa.cs3443.xko141_lab3;
 
 import edu.utsa.cs3443.xko141_lab3.model.AidShip;
 import edu.utsa.cs3443.xko141_lab3.model.AidShipManager;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
@@ -22,125 +23,53 @@ import java.util.ArrayList;
  */
 public class MainScreenController {
 
-    @FXML private ImageView imgLogo;
-    @FXML private Label lblAppTitle;
-    @FXML private Button btnListShips;
+    @FXML private ImageView imageView;
+    @FXML private Label appTitle;
+    @FXML private Button btnList;
+    @FXML private RadioButton btnFind;
+    @FXML private RadioButton btnDelete;
+    @FXML private TextField txtRegistrationNum;
+    @FXML private TextArea txtList;
     @FXML private Button btnGo;
-    @FXML private TextArea txtRegistrationNumber;
-    @FXML private RadioButton rdoFind;
-    @FXML private RadioButton rdoDelete;
-    @FXML private ToggleGroup actionGroup;
-
 
     private AidShipManager manager;
 
-    /**
-     * Called automatically when the FXML is loaded.
-     * Initializes UI components and loads data.
-     */
     @FXML
     public void initialize() throws IOException {
         manager = new AidShipManager();
 
-        // Initialize ToggleGroup for radio buttons
-        actionGroup = new ToggleGroup();
-        rdoFind.setToggleGroup(actionGroup);
-        rdoDelete.setToggleGroup(actionGroup);
-        rdoFind.setSelected(true); // Set default selection
-
-        // Rest of your initialization code...
         manager.loadAidShips("/edu/utsa/cs3443/xko141_lab3/data/aid_ships.csv");
 
-
-
-        // Load logo image from resources
+        // Load logo
         try {
             Image logoImage = new Image(
                     getClass().getResourceAsStream("/edu/utsa/cs3443/xko141_lab3/images/logo.png")
             );
-            imgLogo.setImage(logoImage);
+            imageView.setImage(logoImage);
         } catch (Exception e) {
-            showAlert("Logo image not found.", AlertType.WARNING);
+            printShip("Logo image not found.");
         }
+        txtList.setStyle("-fx-font-family: 'Consolas'; -fx-font-size: 12;");
 
-        lblAppTitle.setText("The Global Emergency Response Organization");
-        btnListShips.setOnAction(e -> listAllShips());
-        btnGo.setOnAction(e -> {
-            try {
-                performAction();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        appTitle.setText("The Global Emergency Response Organization");
+
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Displays all ships in a simple dialog box.
-     */
-    private void listAllShips() {
-        ArrayList<AidShip> ships = manager.getAidShipList();
-
-        if (ships.isEmpty()) {
-            showAlert("No ships found in the database.", AlertType.INFORMATION);
-            return;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (AidShip s : ships) {
-            sb.append(s.toString()).append("\n");
-        }
-
-        showAlert(sb.toString(), AlertType.INFORMATION);
-    }
-
-    /**
-     * Executes Find or Delete depending on the selected radio button.
-     */
-    private void performAction() throws IOException {
-        String regNumber = txtRegistrationNumber.getText().trim();
+    @FXML
+    private void onGo() throws IOException {
+        String regNumber = txtRegistrationNum.getText().trim();
 
         if (regNumber.isEmpty()) {
-            showAlert("Please enter a registration number first.", AlertType.WARNING);
+            printShip("Please enter a registration number first.");
             return;
         }
 
-        if (rdoFind.isSelected()) {
+        if (btnFind.isSelected()) {
             findShip(regNumber);
-        } else if (rdoDelete.isSelected()) {
+        } else if (btnDelete.isSelected()) {
             deleteShip(regNumber);
         } else {
-            showAlert("Please select an action (Find or Delete).", AlertType.WARNING);
+            printShip("Please select an action (Find or Delete).");
         }
     }
 
@@ -150,9 +79,9 @@ public class MainScreenController {
     private void findShip(String regNumber) {
         AidShip ship = manager.findAidShip(regNumber);
         if (ship != null) {
-            showAlert("Ship found:\n" + ship.toString(), AlertType.INFORMATION);
+            printShip("Ship found:\n" + ship.toString());
         } else {
-            showAlert("No ship found with registration number: " + regNumber, AlertType.ERROR);
+            printShip("No ship found with registration number: " + regNumber);
         }
     }
 
@@ -160,23 +89,41 @@ public class MainScreenController {
      * Deletes a ship by registration number.
      */
     private void deleteShip(String regNumber) throws IOException {
-        String dataPath = "data/aid_ships.csv";
         boolean deleted = manager.deleteAidShip(regNumber);
         if (deleted) {
-            showAlert("Ship with registration number " + regNumber + " was deleted.", AlertType.INFORMATION);
+            printShip("Ship with registration number " + regNumber + " was deleted.");
         } else {
-            showAlert("No ship found with registration number " + regNumber, AlertType.ERROR);
+            printShip("No ship found with registration number " + regNumber);
         }
     }
 
     /**
      * Utility method to show a popup alert.
      */
-    private void showAlert(String message, AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle("Aid Ship Manager");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private void printShip(String message) {
+        txtList.appendText(message);
+    }
+
+    @FXML
+    private void onList() {
+        ArrayList<AidShip> ships = manager.getAidShipList();
+
+        if (ships.isEmpty()) {
+            printShip("No ships found in the database.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (AidShip s : ships) {
+            sb.append(s.toString()).append("\n");
+        }
+        printShip("----------------------------------------------------------------------------------------------------------------------------\n");
+        printShip(String.format(
+                "|%-15s |%-15s |%-10s |%-10s |%-22s |%-22s |%-10s |%-13s\n",
+                "Name", "Registration", "Tonnage", "Crew Size", "Current Port",
+                "Aid Type", "Supplies", "Helipad"
+        ));
+        printShip("----------------------------------------------------------------------------------------------------------------------------\n");
+        printShip(sb.toString());
     }
 }
