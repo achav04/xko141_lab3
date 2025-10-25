@@ -14,28 +14,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Controller for the main-screen.fxml view.
- * Handles all user interactions for the Aid Ship Management System.
+ *MainScreenController controls the main-screen fxml
  *
- * Author: Andres Chavez
- * Course: CS3443
- * Lab 3 - Aid Ship Management System
  */
 public class MainScreenController {
 
+    /**
+     * declaration of attributes
+     */
     @FXML private ImageView imageView;
     @FXML private Label appTitle;
-    @FXML private Button btnList;
     @FXML private RadioButton btnFind;
     @FXML private RadioButton btnDelete;
     @FXML private TextField txtRegistrationNum;
     @FXML private TextArea txtList;
-    @FXML private Button btnGo;
     @FXML private ToggleGroup grouped;
-
 
     private AidShipManager manager;
 
+    /**
+     *initializes the important resources for the fxml file
+     */
     @FXML
     public void initialize() throws IOException {
         manager = new AidShipManager();
@@ -45,7 +44,7 @@ public class MainScreenController {
 
         manager.loadAidShips("/edu/utsa/cs3443/xko141_lab3/data/aid_ships.csv");
 
-        // Load logo
+        // loads logo
         try {
             Image logoImage = new Image(
                     getClass().getResourceAsStream("/edu/utsa/cs3443/xko141_lab3/images/logo.png")
@@ -54,27 +53,32 @@ public class MainScreenController {
         } catch (Exception e) {
             print("Logo image not found.");
         }
+        //set text font
         txtList.setStyle("-fx-font-family: 'Consolas'; -fx-font-size: 12;");
 
+        //print title
         appTitle.setText("The Global Emergency Response Organization");
 
     }
 
+    /**
+     *onGo button press takes registration number in textbox and checks what radio button is clicked to either find or delete ship
+     */
     @FXML
     private void onGo() throws IOException {
-        String regNumber = txtRegistrationNum.getText().trim();
+        String regNumber = txtRegistrationNum.getText().trim();// sets text in box to registration num
 
-        if (regNumber.isEmpty()) {
+        if (regNumber.isEmpty()) {//check if text was empty
             print("Please enter a registration number first.");
             return;
         }
 
-        if (btnFind.isSelected()) {
+        if (btnFind.isSelected()) {//check button selected
             findShip(regNumber);
         } else if (btnDelete.isSelected()) {
             deleteShip(regNumber);
         } else {
-            print("Please select an action (Find or Delete).");
+            print("Please select a button, Find or Delete");
         }
     }
 
@@ -82,9 +86,9 @@ public class MainScreenController {
      * Searches for a ship by registration number.
      */
     private void findShip(String regNumber) {
-        AidShip ship = manager.findAidShip(regNumber);
+        AidShip ship = manager.findAidShip(regNumber); // calls find aidship method, finds the ship and sets it to ship
         if (ship != null) {
-            print(
+            print(//prints info from ship
                     "Aid Ship Card:"+
                     "\n----------------------------------------------------------------------"+
                     "\nName:                  " +ship.getName()+
@@ -103,7 +107,7 @@ public class MainScreenController {
     }
 
     /**
-     * Deletes a ship by registration number.
+     *Deletes ship based of registration number
      */
     private void deleteShip(String regNumber) throws IOException {
         boolean deleted = manager.deleteAidShip(regNumber);
@@ -116,14 +120,17 @@ public class MainScreenController {
 
     }
 
+    // sets new text to print for new buttons
     private void print(String message){
         txtList.setText(message);
     }
 
 
-// print all ships
+    /**
+     * onList buttton click list all available ships in array
+      */
     @FXML
-    private void onList() {
+    public void onList() {
         ArrayList<AidShip> ships = manager.getAidShipList();
 
         if (ships.isEmpty()) {
@@ -150,6 +157,9 @@ public class MainScreenController {
         printShipList(sb.toString());
     }
 
+    /** appends text for when looping through array adds to last string
+     *
+     */
     private void printShipList(String message) {
         txtList.appendText(message);
     }
